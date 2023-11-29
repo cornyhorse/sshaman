@@ -3,6 +3,7 @@ import json
 import os
 
 from configs import get_config_path, set_config_path
+from entities import Server, ServerGroup
 
 
 
@@ -13,50 +14,37 @@ class SSHAMan:
             set_config_path(config_path)
         self.config_path = config_path
 
-        self.check_config_exists()
-        self.config = []
 
-    def check_config_exists(self):
-        if not os.path.exists(self.config_path):
-            # Create the parent directory if it doesn't exist
-            parent_dir = os.path.dirname(self.config_path)
-            if not os.path.exists(parent_dir):
-                os.makedirs(parent_dir)
-            payload = {'Information': 'This is the default config file for SSHaman. Please do not remove this file!',
-                       'About': 'Each directory in this directory represents a group of servers. Each directory may '
-                                'contain an arbitrary number of servers. Each server is represented by a JSON file.'}
-            with open(self.config_path, 'w') as f:
-                json.dump(payload, f, indent=4)
-        # else:
-        #     self.load_config()
+    def list_all(self):
+        """List all groups"""
+        for root, dirs, files in os.walk(self.config_path):
+            if root != self.config_path:
+                relative_path = root.replace(self.config_path, '')
+                split_path = relative_path.split('/')
+                split_path = [x for x in split_path if x != '']
+                depth = len(split_path) - 1
+                group_name = os.path.basename(root)
+                indent = '\t' * depth
+                print(f'{indent}{group_name}:')
+                for file in files:
+                    if file.endswith('.json'):
+                        file_path = os.path.join(root, file)
+                        with open(file_path, 'r') as f:
+                            config = json.load(f)
+                            indent = '\t' * (depth + 1)
+                            print(f'{indent}{config["alias"]} - {config["host"]}:{config["port"]}')
+                if len(files) == 0:
+                    print('\t\tNo servers in configuration path.')
 
-    def create_default_config(self):
-        """Create a new config file at the default path"""
-        # Create the parent directory if it doesn't exist
-        parent_dir = os.path.dirname(self.config_path)
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
-
-        group_list = default_config()
-        self.serialize(group_list)
-        self.save_config()
-
-    # def load_config(self):
-    #     """Load the config file at the default path"""
-    #     with open(self.config_path, 'r') as f:
-    #         self.config = json.load(f)
-
-    def save_config(self):
-        """Save the config file at the default path"""
-        with open(self.config_path, 'w') as f:
-            json.dump(self.config, f, indent=4)
-
-    def serialize(self, group_list):
-        serialized_list = serialize_server_group_list(group_list)
-        self.config = serialized_list
-        print(type(serialized_list))
-        pprint(serialized_list)
-        # self.config = json.dumps(serialized_list, indent=4)
+                if len(dirs) == 0 and depth != 0:
+                    print('')
 
 
 
+
+if __name__ == '__main__':
+    home_dir = os.path.expanduser('~')
+    test_config_path = os.path.join(home_dir, '.config', 'test_sshaman')
+    print(test_config_path)
+    smn = SSHAMan(config_path=test_config_path)
+    smn.list_all()

@@ -102,3 +102,18 @@ class TestSSHAMan(TestCase):
         correct_contents = []
         assert path_content == correct_contents
 
+    def test_list_all(self):
+        """
+        Test that the list_all method returns the correct output.
+        :return:
+        """
+        correct_output = """
+group1:
+    vm1 - 192.168.1.100:22
+	sg1:
+		vm2 - 192.168.1.100:22
+
+group2:
+		No servers in configuration path."""
+        output = self.smn.list_all()
+        assert output == correct_output
