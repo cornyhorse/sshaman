@@ -1,5 +1,5 @@
 import click
-from utils.initialize import SSHAMan  # Ensure SSHAMan is importable from your project structure
+from management.sshman import SSHAMan  # Ensure SSHAMan is importable from your project structure
 
 
 @click.group()
@@ -9,7 +9,7 @@ def cli():
 
 
 @cli.command()
-@click.argument('config_path', required=False, default=None)
+@click.option('--config_path', required=False, default=None)
 def list_all(config_path):
     """List all groups."""
     manager = SSHAMan(config_path=config_path if config_path else None)
@@ -18,7 +18,7 @@ def list_all(config_path):
 
 @cli.command()
 @click.argument('group_name')
-@click.argument('config_path', required=False, default=None)
+@click.option('--config_path', required=False, default=None)
 def make_group(group_name, config_path):
     """Make a group of servers."""
     manager = SSHAMan(config_path=config_path if config_path else None)
@@ -31,7 +31,7 @@ def make_group(group_name, config_path):
 @click.argument('host')
 @click.option('--port', default=22, help='Port number.')
 @click.option('--user', default=None, help='Username for SSH.')
-@click.argument('config_path', required=False, default=None)
+@click.option('--config_path', required=False, default=None)
 def add_server(group_path, alias, host, port, user, config_path):
     """Add a server to a group."""
     manager = SSHAMan(config_path=config_path if config_path else None)
