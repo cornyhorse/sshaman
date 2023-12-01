@@ -1,31 +1,10 @@
 import json
 import os
-import shutil
-import pytest
-from configs import set_config_path
-from tests.generate_test_configurations import generate_default_config
-from utils.initialize import SSHAMan
 
-@pytest.fixture(scope="module")
-def sshaman_setup():
-    home_dir = os.path.expanduser('~')
-    test_config_path = os.path.join(home_dir, '.config', 'test_sshaman')
-    set_config_path(test_config_path)
+from entities.server import Server
+from entities.server_group import ServerGroup
 
-    # Removing test config path to test initialization
-    if os.path.exists(os.path.normpath(test_config_path)):
-        shutil.rmtree(os.path.normpath(test_config_path))
-
-    # Generating default config
-    generate_default_config(test_config_path)
-
-    smn = SSHAMan(config_path=test_config_path)
-
-    yield smn, test_config_path
-
-    # Teardown
-    if os.path.exists(os.path.normpath(test_config_path)):
-        shutil.rmtree(os.path.normpath(test_config_path))
+from tests.setup_tests import sshaman_setup
 
 def test_load_config(sshaman_setup):
     """
@@ -136,3 +115,31 @@ group2:
     output = output.strip().replace('    ', '\t')
 
     assert output == correct_output
+
+def test_make_group_single(sshaman_setup):
+    smn, _ = sshaman_setup
+    group_name = "group1"
+    created_group = smn.make_group(group_name)
+    assert isinstance(created_group, ServerGroup)
+    assert os.path.exists(os.path.join(smn.config_path, group_name))
+
+# def test_make_group_nested(sshaman_setup):
+#     smn, _ = sshaman_setup
+#     group_name = "group1.subgroup1.subgroup2"
+#     created_group = smn.make_group(group_name)
+#
+#     # Assert that the final group in the hierarchy is returned
+#     assert isinstance(created_group, ServerGroup)
+#     assert created_group.group_name == 'subgroup2'
+#
+#     # Check if each nested group's directory is created
+#     group1_path = os.path.join(smn.config_path, 'group1')
+#     subgroup1_path = os.path.join(group1_path, 'subgroup1')
+#     subgroup2_path = os.path.join(subgroup1_path, 'subgroup2')
+#
+#     assert os.path.exists(group1_path)
+#     assert os.path.exists(subgroup1_path)
+#     assert os.path.exists(subgroup2_path)
+#
+#     # Optionally, assert parent-child relationships if such properties are accessible
+#     # ...
