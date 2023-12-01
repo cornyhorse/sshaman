@@ -1,30 +1,43 @@
-from pprint import pprint
 import click
-from utils.initialize import SSHAMan
-from tests.generate_test_configurations import generate_default_config
+from utils.initialize import SSHAMan  # Ensure SSHAMan is importable from your project structure
 
 
-@click.command()
-@click.option('--group-filter', default=None, help='List groups of servers')
-@click.option('--add-group', default=None, help='Add a group of servers')
-def main(group_filter, add_group):
-    smn = SSHAMan()
-
-    if add_group:
-        smn.add_group(add_group)
-        print(f"Group '{add_group}' added.")
-
-    if group_filter:
-        smn.print_group_list(group_filter)
-    elif add_group is None:
-        # If no filter is provided and no group was added, show all groups
-        smn.print_group_list('all')
+@click.group()
+def cli():
+    """SSHAMan Command Line Interface."""
+    pass
 
 
-def dev():
-    generate_default_config()
+@cli.command()
+@click.argument('config_path', required=False, default=None)
+def list_all(config_path):
+    """List all groups."""
+    manager = SSHAMan(config_path=config_path if config_path else None)
+    manager.list_all()
+
+
+@cli.command()
+@click.argument('group_name')
+@click.argument('config_path', required=False, default=None)
+def make_group(group_name, config_path):
+    """Make a group of servers."""
+    manager = SSHAMan(config_path=config_path if config_path else None)
+    manager.make_group(group_name)
+
+
+@cli.command()
+@click.argument('group_path')
+@click.argument('alias')
+@click.argument('host')
+@click.option('--port', default=22, help='Port number.')
+@click.option('--user', default=None, help='Username for SSH.')
+@click.argument('config_path', required=False, default=None)
+def add_server(group_path, alias, host, port, user, config_path):
+    """Add a server to a group."""
+    manager = SSHAMan(config_path=config_path if config_path else None)
+    kwargs = {'port': port, 'user': user} if user else {'port': port}
+    manager.add_server(group_path, alias, host, **kwargs)
 
 
 if __name__ == '__main__':
-    # main()
-    dev()
+    cli()
