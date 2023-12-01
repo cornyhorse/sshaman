@@ -1,6 +1,3 @@
-from utils.initialize import SSHAMan
-
-
 def generate_default_config(test_config_path):
     from entities import ServerGroup, Server
     print("Generating default config...")
