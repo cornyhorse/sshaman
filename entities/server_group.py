@@ -16,12 +16,11 @@ class ServerGroup(BaseModel):
 
     @property
     def absolute_path(self):
-        if self.relative_path == '':
-            local_dir = os.path.join(self.sshaman_path, self.group_name)
+        if self.relative_path:
+            local_dir = os.path.join(self.sshaman_path, self.relative_path)
         else:
-            local_dir = os.path.join(self.sshaman_path, self.relative_path, self.group_name)
-        local_dir = os.path.normpath(local_dir)
-        return local_dir
+            local_dir = os.path.join(self.sshaman_path, self.group_name)
+        return os.path.normpath(local_dir)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -41,10 +40,10 @@ class ServerGroup(BaseModel):
         else:
             print(f'Directory {self.absolute_path} already exists.')
 
-    def make_child(self, group_name):
-        child_group = ServerGroup(group_name=group_name, relative_path=self.group_name, sshaman_path=self.sshaman_path)
+    def make_child(self, group_name, parent_absolute_path):
+        child_group = ServerGroup(group_name=group_name, relative_path=parent_absolute_path,
+                                  sshaman_path=self.sshaman_path)
         self.children[group_name] = child_group
-
 
     def add_server(self, server):
         server.save_config(server_group_path=self.absolute_path)

@@ -5,6 +5,8 @@ from entities.server import Server
 from entities.server_group import ServerGroup
 
 from tests.setup_tests import sshaman_setup
+from tests.util_tests import print_diff
+
 
 def test_load_config(sshaman_setup):
     """
@@ -101,16 +103,19 @@ def test_list_all(sshaman_setup, capsys):
     captured = capsys.readouterr()
     output = captured.out
 
-    correct_output = """
-group1:
-    vm1 - 192.168.1.100:22
-    sg1:
-        vm2 - 192.168.1.100:22
-
-group2:
-        No servers in configuration path."""
+    correct_output = """├── group1/
+│   ├── vm2 - 192.168.1.100:22
+│   ├── vm1 - 192.168.1.100:22
+│   ├── subgroup1/
+│   │   ├── subgroup2/
+├── group2/
+"""
 
     # Normalize newlines and spaces for cross-platform compatibility and consistent formatting
+    print("-"*50)
+    print("Actual Output vs. Expected Output:")
+    print_diff(expected=correct_output, actual=output)
+    print("-" * 50)
     correct_output = correct_output.strip().replace('    ', '\t')
     output = output.strip().replace('    ', '\t')
 
@@ -123,23 +128,23 @@ def test_make_group_single(sshaman_setup):
     assert isinstance(created_group, ServerGroup)
     assert os.path.exists(os.path.join(smn.config_path, group_name))
 
-# def test_make_group_nested(sshaman_setup):
-#     smn, _ = sshaman_setup
-#     group_name = "group1.subgroup1.subgroup2"
-#     created_group = smn.make_group(group_name)
-#
-#     # Assert that the final group in the hierarchy is returned
-#     assert isinstance(created_group, ServerGroup)
-#     assert created_group.group_name == 'subgroup2'
-#
-#     # Check if each nested group's directory is created
-#     group1_path = os.path.join(smn.config_path, 'group1')
-#     subgroup1_path = os.path.join(group1_path, 'subgroup1')
-#     subgroup2_path = os.path.join(subgroup1_path, 'subgroup2')
-#
-#     assert os.path.exists(group1_path)
-#     assert os.path.exists(subgroup1_path)
-#     assert os.path.exists(subgroup2_path)
-#
-#     # Optionally, assert parent-child relationships if such properties are accessible
-#     # ...
+def test_make_group_nested(sshaman_setup):
+    smn, _ = sshaman_setup
+    group_name = "group1.subgroup1.subgroup2"
+    created_group = smn.make_group(group_name)
+
+    # Assert that the final group in the hierarchy is returned
+    assert isinstance(created_group, ServerGroup)
+    assert created_group.group_name == 'subgroup2'
+
+    # Check if each nested group's directory is created
+    group1_path = os.path.join(smn.config_path, 'group1')
+    subgroup1_path = os.path.join(group1_path, 'subgroup1')
+    subgroup2_path = os.path.join(subgroup1_path, 'subgroup2')
+
+    assert os.path.exists(group1_path)
+    assert os.path.exists(subgroup1_path)
+    assert os.path.exists(subgroup2_path)
+    #
+    # Optionally, assert parent-child relationships if such properties are accessible
+    # ...

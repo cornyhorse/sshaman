@@ -8,7 +8,7 @@ from management.sshman import SSHAMan
 from tests.generate_test_configurations import generate_default_config
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def sshaman_setup():
     home_dir = os.path.expanduser('~')
     test_config_path = os.path.join(home_dir, '.config', 'test_sshaman')

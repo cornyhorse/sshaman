@@ -2,8 +2,7 @@ def generate_default_config(test_config_path):
     from entities import ServerGroup, Server
     print("Generating default config...")
     g1 = ServerGroup(group_name='group1', sshaman_path=test_config_path)
-    g1.make_child('sg1')
-
+    g1.make_child('sg1', parent_absolute_path=g1.absolute_path)
     s = Server(
         alias='vm1',
         host='192.168.1.100',
