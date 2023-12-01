@@ -1,6 +1,6 @@
 import os
 import json
-from pydantic import BaseModel, Field, validator, root_validator, field_validator
+from pydantic import BaseModel, Field, root_validator, field_validator, ConfigDict
 from typing import Optional, List, Dict
 
 from configs import CONFIG_PATH
@@ -58,6 +58,7 @@ class ServerGroup(BaseModel):
             return self.children[item]
         raise AttributeError(f"'{type(self).__name__}' object has no attribute '{item}'")
 
-    class Config:
-        extra = 'forbid'
-        validate_assignment = True
+    model_config = {
+        'extra': 'forbid',
+        'validate_assignment': True
+    }

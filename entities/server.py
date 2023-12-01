@@ -1,6 +1,6 @@
 import json
 import os
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 
 class Server(BaseModel):
@@ -14,16 +14,21 @@ class Server(BaseModel):
     start_commands: list[str] = None
     server_group_path: str = None
 
+    model_config = {
+        'extra': 'forbid',
+        'validate_assignment': True
+    }
+
     def __str__(self):
         print(f'  {self.alias} - {self.host}:{self.port}')
 
-    @validator('port')
+    @field_validator('port')
     def validate_port(cls, value):
         if not 0 <= value <= 65535:
             raise ValueError("Port must be between 0 and 65535")
         return value
 
-    @validator('user')
+    @field_validator('user')
     def validate_user(cls, v):
         if not v:
             raise ValueError("User must not be empty")
@@ -44,5 +49,3 @@ class Server(BaseModel):
     def serialize(self):
         return json.loads(self.model_dump_json(indent=4))
 
-    class Config:
-        extra = 'forbid'  # Prevents extra fields from being added to the model
