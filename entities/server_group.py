@@ -25,7 +25,7 @@ class ServerGroup(BaseModel):
     def __init__(self, **data):
         super().__init__(**data)
         self.sshaman_path = os.path.normpath(self.sshaman_path)
-        print("Initializing ServerGroup")
+        print(f"Initializing ServerGroup: {self.group_name}")
         self._initialize()
 
     def _initialize(self):
@@ -41,8 +41,16 @@ class ServerGroup(BaseModel):
             print(f'Directory {self.absolute_path} already exists.')
 
     def make_child(self, group_name, parent_absolute_path):
+        """
+        Create a child group.
+
+        :param group_name:
+        :param parent_absolute_path:
+        :return:
+        """
         child_group = ServerGroup(group_name=group_name, relative_path=parent_absolute_path,
                                   sshaman_path=self.sshaman_path)
+        child_group._initialize()  # Initialize the child group
         self.children[group_name] = child_group
 
     def add_server(self, server):

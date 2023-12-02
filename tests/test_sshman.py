@@ -53,12 +53,19 @@ def test_load_config(sshaman_setup):
 
     # Assert that group1 contains sg1 and vm1
     path_content = os.listdir(group1)
-    correct_contents = ['sg1', 'vm1.json']
+    correct_contents = ['subgroup1', 'vm1.json', 'vm2.json']
+
+    actual = sorted(path_content)
+    expected = sorted(correct_contents)
+    if actual != expected:
+        print_diff(expected=expected, actual=actual)
+
+
     assert sorted(path_content) == sorted(correct_contents)
 
     # Assert that sg1 contains vm2
-    subgroup1 = os.path.join(group1, 'sg1')
-    vm2 = os.path.join(subgroup1, 'vm2.json')
+    subgroup1 = os.path.join(group1, 'subgroup1')
+    vm2 = os.path.join(group1, 'vm2.json')
     with open(vm2, 'r') as f:
         vm2_json = json.load(f)
         correct_contents = {
@@ -76,13 +83,13 @@ def test_load_config(sshaman_setup):
                 "echo 'hello world'",
                 "ls -la"
             ],
-            "server_group_path": os.path.join(test_config_path, "group1", "sg1")
+            "server_group_path": os.path.join(test_config_path, "group1")
         }
         assert vm2_json == correct_contents
 
     # Assert that sg1 ONLY contains vm2
     path_content = os.listdir(subgroup1)
-    correct_contents = ['vm2.json']
+    correct_contents = ['subgroup2']
     assert sorted(path_content) == sorted(correct_contents)
 
     # Check existence of group2 and its emptiness
@@ -148,3 +155,4 @@ def test_make_group_nested(sshaman_setup):
     #
     # Optionally, assert parent-child relationships if such properties are accessible
     # ...
+

@@ -25,14 +25,13 @@ def test_list_all(sshaman_setup, runner, capsys):
     output = captured.out
 
     # Define the expected output
-    expected_output = """
-group1:
-    vm1 - 192.168.1.100:22
-    sg1:
-        vm2 - 192.168.1.100:22
-
-group2:
-        No servers in configuration path."""
+    expected_output = """├── group1/
+│   ├── vm2 - 192.168.1.100:22
+│   ├── vm1 - 192.168.1.100:22
+│   ├── subgroup1/
+│   │   ├── subgroup2/
+├── group2/
+"""
 
     expected_output = expected_output.strip().replace('    ', '\t')
     output = output.strip().replace('    ', '\t')
