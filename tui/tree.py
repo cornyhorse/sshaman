@@ -6,6 +6,7 @@ Run with:
     python code_browser.py PATH
 """
 import json
+import subprocess
 from rich.syntax import Syntax
 from rich.traceback import Traceback
 
@@ -15,7 +16,8 @@ from textual.reactive import var
 from textual.widgets import DirectoryTree, Footer, Header, Static, Placeholder
 
 from configs import CONFIG_PATH
-
+from tui.ssh_connections.ssh_connect import connect_shell
+from tui.textual_extensions.custom_directory_tree import CustomDirectoryTree
 
 class CodeBrowser(App):
     """Textual code browser app."""
@@ -39,6 +41,12 @@ class CodeBrowser(App):
     def __init__(self, path: str = CONFIG_PATH, **kwargs) -> None:
         super().__init__(**kwargs)
         self.path = path
+        self.command = ''
+        self.selected_file_path = None
+
+    async def handle_file_selected(self, message: CustomDirectoryTree.FileSelected) -> None:
+        """Handle when a file is selected in the directory tree."""
+        self.selected_file_path = message.path
 
     def watch_show_tree(self, show_tree: bool) -> None:
         """Called when show_tree is modified."""
@@ -48,16 +56,16 @@ class CodeBrowser(App):
         """Compose our UI."""
         yield Header()
         with Container():
-            yield DirectoryTree(self.path, id="tree-view")
+            yield CustomDirectoryTree(self.path, id="tree-view")
             with VerticalScroll(id="code-view"):
                 yield Static(id="code", expand=True)
         yield Footer()
 
     def on_mount(self) -> None:
-        self.query_one(DirectoryTree).focus()
+        self.query_one(CustomDirectoryTree).focus()
 
     def on_directory_tree_file_selected(
-            self, event: DirectoryTree.FileSelected
+            self, event: CustomDirectoryTree.FileSelected
     ) -> None:
         """Called when the user click a file in the directory tree."""
         event.stop()
@@ -81,34 +89,38 @@ class CodeBrowser(App):
             self.sub_title = str(event.path)
 
     def action_toggle_files(self) -> None:
-        """Called in response to key binding."""
+        """
+        Called in response to f key binding.
+        Toggle the visibility of the directory tree.
+        :return:
+        """
         self.show_tree = not self.show_tree
 
-
-    def action_connect_ssh(self) -> None:
-        """Called in response to 'c' key binding."""
-        # Path to the JSON file
-        self.selected_file_path
-
-        # Read the JSON file
-        with open(self.selected_file_path, "r") as json_file:
-            data = json.load(json_file)
-            command = f"ssh {data['user']}@{data['host']} -p {data['port']}"
-        self.command = command
-
-
-        # Stop the CodeBrowser app
+    def return_command(self, func, **kwargs):
+        self.command = func(**kwargs)
+        if self.command == '' or not self.command:
+            raise ValueError("Command is empty.")
         self.exit()
 
-        # Print the key-value pair
+    def action_connect_ssh(self) -> None:
+        """
+        Called in response to key binding.
+        :return:
+        """
+        if self.selected_file_path is not None:
+            self.return_command(connect_shell, config_path=self.selected_file_path)
+        else:
+            print("No file selected.")
+        self.return_command(connect_shell, config_path=self.selected_file_path)
 
 
 def main():
     test_path = "/home/matt/.config/test_sshaman"
     app = CodeBrowser(path=test_path)
     app.run()
+
     dynamic_data = getattr(app, 'command', None)
+
     if getattr(app, 'command', False):
         print(dynamic_data)
-
-
+        subprocess.run(dynamic_data, shell=True)
