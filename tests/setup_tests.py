@@ -25,13 +25,13 @@ def sshaman_setup():
     yield smn, test_config_path
 
     # Teardown
-    # if os.path.exists(os.path.normpath(test_config_path)):
-    #     shutil.rmtree(os.path.normpath(test_config_path))
+    if os.path.exists(os.path.normpath(test_config_path)):
+        shutil.rmtree(os.path.normpath(test_config_path))
 
 
 def generate_default_config(test_config_path):
     from entities import ServerGroup, Server
-    print("Generating default config...")
+    print("Generating default config in path {}".format(test_config_path))
     g1 = ServerGroup(group_name='group1', sshaman_path=test_config_path)
     g1.make_child('sg1', parent_absolute_path=g1.absolute_path)
     s = Server(
@@ -48,7 +48,6 @@ def generate_default_config(test_config_path):
         start_commands=["echo 'hello world'", "ls -la"]
     )
     g1.add_server(s)
-
 
     s2 = Server(
         alias='vm2',
@@ -69,6 +68,7 @@ def generate_default_config(test_config_path):
     g2 = ServerGroup(group_name='group2', sshaman_path=test_config_path)
     group_list = [g1, g2]
     return group_list
+
 
 if __name__ == '__main__':
     generate_default_config('/home/matt/.config/test_sshaman')

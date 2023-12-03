@@ -58,3 +58,4 @@ def test_list_all(sshaman_setup, runner, capsys):
 #     result = runner.invoke(cli, ['add-server', group_path, alias, host, '--port', '22'])
 #     assert result.exit_code == 0
 #     assert 'Server added' in result.output  # Replace with expected success message
+

@@ -124,8 +124,8 @@ class CodeBrowser(App):
 
 
 def main():
-    test_path = "/home/matt/.config/test_sshaman"
-    app = CodeBrowser(path=test_path)
+    # test_path = "/home/matt/.config/test_sshaman"
+    app = CodeBrowser(path=ROOT_CONFIG_PATH)
     app.run()
 
     dynamic_data = getattr(app, 'command', None)

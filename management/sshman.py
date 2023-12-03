@@ -10,7 +10,8 @@ class SSHAMan:
         # If a custom config path is provided, overwrite the global variable with the custom path.
         if config_path != get_config_path():
             set_config_path(config_path)
-        self.config_path = config_path
+
+        self.config_path = get_config_path()
 
     def list_all(self):
         """List all groups and server details in a tree-like structure."""
