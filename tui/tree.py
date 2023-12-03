@@ -15,9 +15,10 @@ from textual.containers import Container, VerticalScroll
 from textual.reactive import var
 from textual.widgets import DirectoryTree, Footer, Header, Static, Placeholder
 
-from configs import CONFIG_PATH
+from configs import CONFIG_PATH as ROOT_CONFIG_PATH
 from tui.ssh_connections.ssh_connect import connect_shell
-from tui.textual_extensions.custom_directory_tree import CustomDirectoryTree
+
+
 
 class CodeBrowser(App):
     """Textual code browser app."""
@@ -38,34 +39,34 @@ class CodeBrowser(App):
 
     show_tree = var(True)
 
-    def __init__(self, path: str = CONFIG_PATH, **kwargs) -> None:
+    def __init__(self, path: str = ROOT_CONFIG_PATH, **kwargs) -> None:
         super().__init__(**kwargs)
         self.path = path
         self.command = ''
         self.selected_file_path = None
-
-    async def handle_file_selected(self, message: CustomDirectoryTree.FileSelected) -> None:
-        """Handle when a file is selected in the directory tree."""
-        self.selected_file_path = message.path
 
     def watch_show_tree(self, show_tree: bool) -> None:
         """Called when show_tree is modified."""
         self.set_class(show_tree, "-show-tree")
 
     def compose(self) -> ComposeResult:
-        """Compose our UI."""
+        """
+        Compose the UI of the application.
+
+        :return:
+        """
         yield Header()
         with Container():
-            yield CustomDirectoryTree(self.path, id="tree-view")
+            yield DirectoryTree(self.path, id="tree-view")
             with VerticalScroll(id="code-view"):
                 yield Static(id="code", expand=True)
         yield Footer()
 
     def on_mount(self) -> None:
-        self.query_one(CustomDirectoryTree).focus()
+        self.query_one(DirectoryTree).focus()
 
     def on_directory_tree_file_selected(
-            self, event: CustomDirectoryTree.FileSelected
+            self, event: DirectoryTree.FileSelected
     ) -> None:
         """Called when the user click a file in the directory tree."""
         event.stop()
@@ -104,14 +105,14 @@ class CodeBrowser(App):
 
     def action_connect_ssh(self) -> None:
         """
-        Called in response to key binding.
+        Called in response to c key binding.
         :return:
         """
-        if self.selected_file_path is not None:
-            self.return_command(connect_shell, config_path=self.selected_file_path)
+        if not self.selected_file_path:
+            pass
         else:
-            print("No file selected.")
-        self.return_command(connect_shell, config_path=self.selected_file_path)
+            self.return_command(connect_shell, config_path=self.selected_file_path)
+
 
 
 def main():
