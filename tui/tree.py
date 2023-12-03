@@ -63,6 +63,29 @@ class CodeBrowser(App):
                 yield Static(id="code", expand=True)
         yield Footer()
 
+    def on_directory_tree_file_selected(
+            self, event: DirectoryTree.FileSelected
+    ) -> None:
+        """Called when the user click a file in the directory tree."""
+        event.stop()
+        self.selected_file_path = event.path
+        code_view = self.query_one("#code", Static)
+        try:
+            syntax = Syntax.from_path(
+                str(event.path),
+                line_numbers=True,
+                word_wrap=False,
+                indent_guides=True,
+                theme="github-dark",
+            )
+        except Exception:
+            code_view.update(Traceback(theme="github-dark", width=None))
+            self.sub_title = "ERROR"
+        else:
+            code_view.update(syntax)
+            self.query_one("#code-view").scroll_home(animate=False)
+            self.sub_title = str(event.path)
+
     def on_mount(self) -> None:
         self.query_one(DirectoryTree).focus()
 
