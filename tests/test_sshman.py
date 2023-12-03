@@ -1,7 +1,6 @@
 import json
 import os
 
-from entities.server import Server
 from entities.server_group import ServerGroup
 
 from tests.setup_tests import sshaman_setup

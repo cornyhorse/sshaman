@@ -1,7 +1,7 @@
 import os
 import pytest
 from click.testing import CliRunner
-from cli.sshaman_cli import cli  # Replace with the actual name of your script
+from cli.sshaman_cli import cli
 
 from tests.setup_tests import sshaman_setup
 

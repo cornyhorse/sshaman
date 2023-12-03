@@ -16,7 +16,7 @@ from textual.reactive import var
 from textual.widgets import DirectoryTree, Footer, Header, Static, Placeholder
 
 from configs import CONFIG_PATH as ROOT_CONFIG_PATH
-from tui.ssh_connections.ssh_connect import connect_shell
+from tui.ssh_connections.ssh_connect import connect_shell, connect_sftp
 
 
 
@@ -30,7 +30,7 @@ class CodeBrowser(App):
         # ("e", "edit_file", "Edit File"),
         # ("d", "delete_file", "Delete File"),
         ("c", "connect_ssh", "Connect via SSH"),
-        ("s", "sftp", "Connect via SFTP"),
+        ("s", "connect_sftp", "Connect via SFTP"),
         # ("r", "refresh", "Refresh"),
         # ("a", "add_server", "Add Server"),
         # ("g", "make_group", "Make Group"),
@@ -112,6 +112,16 @@ class CodeBrowser(App):
             pass
         else:
             self.return_command(connect_shell, config_path=self.selected_file_path)
+
+    def action_connect_sftp(self) -> None:
+        """
+        Called in response to s key binding.
+        :return:
+        """
+        if not self.selected_file_path:
+            pass
+        else:
+            self.return_command(connect_sftp, config_path=self.selected_file_path)
 
 
 
