@@ -3,6 +3,7 @@ import subprocess
 import json
 import logging
 
+
 def check_if_ssh_config_exists(config_path):
     """
     Checks if the SSH configuration file exists.
@@ -32,7 +33,7 @@ def check_if_ssh_config_is_valid(config_path):
         return False
 
 
-def connect_shell(config_path):
+def retrieve_file(config_path):
     """
     Connects to a server via SSH using the configuration specified in the given path.
 
@@ -49,10 +50,21 @@ def connect_shell(config_path):
 
     with open(config_path, "r") as json_file:
         config = json.load(json_file)
-        command = f"ssh {config['user']}@{config['host']} -p {config['port']}"
+        return config
+
+
+def connect_shell(config_path):
+    config = retrieve_file(config_path)
+    command = f"ssh {config['user']}@{config['host']} -p {config['port']}"
+    print(f'Running: {command}')
     return command
 
 
+def connect_sftp(config_path):
+    config = retrieve_file(config_path)
+    command = f"sftp -P {config['port']} {config['user']}@{config['host']} "
+    print(f'Running: {command}')
+    return command
 
 
 if __name__ == '__main__':
