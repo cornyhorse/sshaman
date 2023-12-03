@@ -65,5 +65,11 @@ class SSHAMan:
 
         # Create a server and add it to the last group
         server_data = {'alias': alias, 'host': host, **kwargs}
+        if not server_data.get('forward_ports'):
+            server_data['forward_ports'] = ['']
+
+        if not server_data.get('start_commands'):
+            server_data['start_commands'] = ['']
+
         server = Server(**server_data)
         last_group.add_server(server)

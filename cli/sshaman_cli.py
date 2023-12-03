@@ -3,17 +3,7 @@ from management.sshman import SSHAMan  # Ensure SSHAMan is importable from your 
 from entities import Server
 from tests.setup_tests import generate_default_config
 from tui import tree
-
-
-def create_options_for_model(model_class):
-    def decorator(f):
-        for field_name, model_field in model_class.__fields__.items():
-            default_value = model_field.default
-            help_text = f'{field_name} of the server. Default: {default_value}'
-            f = click.option(f'--{field_name}', default=default_value, help=help_text)(f)
-        return f
-
-    return decorator
+from configs import CONFIG_PATH
 
 
 @click.group(invoke_without_command=True)
@@ -42,7 +32,7 @@ def list_all(config_path):
 @click.option('--config_path', required=False, default=None)
 def make_group(group_name, config_path):
     """Make a group of servers."""
-    manager = SSHAMan(config_path=config_path if config_path else None)
+    manager = SSHAMan(config_path=config_path if config_path else CONFIG_PATH)
     manager.make_group(group_name)
 
 
@@ -50,7 +40,7 @@ def make_group(group_name, config_path):
 @click.option('--config_path', required=False, default=None)
 def initialize_sample(config_path):
     """Initialize sample config."""
-    smn = SSHAMan()
+    smn = SSHAMan(config_path=config_path if config_path else CONFIG_PATH)
     generate_default_config(smn.config_path)
 
 
@@ -58,10 +48,16 @@ def initialize_sample(config_path):
 @click.argument('group_path')
 @click.argument('alias')
 @click.argument('host')
-@create_options_for_model(Server)
-def add_server(group_path, alias, host, port, user, config_path, **kwargs):
+@click.option('--port', required=False, default=22)
+@click.option('--user', required=False, default='root')
+@click.option('--identity_file', required=False, default='')
+@click.option('--password', required=False, default='')
+@click.option('--forward_ports', required=False)
+@click.option('--start_commands', required=False)
+@click.option('--config_path', required=False, default='')
+def add_server(group_path, alias, host, port, user, config_path=CONFIG_PATH, **kwargs):
     """Add a server to a group."""
-    manager = SSHAMan(config_path=kwargs.pop('config_path', None))
+    manager = SSHAMan(config_path=config_path if config_path else CONFIG_PATH)
     manager.add_server(group_path, alias, host, **kwargs)
 
 

@@ -3,13 +3,13 @@ import json
 from pydantic import BaseModel, Field, root_validator, field_validator, ConfigDict
 from typing import Optional, List, Dict
 
-from configs import CONFIG_PATH
+from configs import CONFIG_PATH, get_config_path
 
 
 class ServerGroup(BaseModel):
     group_name: str
     children: Dict[str, 'ServerGroup'] = {}  # Store children in a dictionary
-    sshaman_path: str = CONFIG_PATH
+    sshaman_path: str = get_config_path()
 
     # The relative path is the parent of sshaman path if otherwise not provided.
     relative_path: str = ''
