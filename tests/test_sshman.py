@@ -59,7 +59,6 @@ def test_load_config(sshaman_setup):
     if actual != expected:
         print_diff(expected=expected, actual=actual)
 
-
     assert sorted(path_content) == sorted(correct_contents)
 
     # Assert that sg1 contains vm2
@@ -98,6 +97,7 @@ def test_load_config(sshaman_setup):
     correct_contents = []
     assert path_content == correct_contents
 
+
 def test_list_all(sshaman_setup, capsys):
     """
     Test that the list_all method returns the correct output.
@@ -118,7 +118,7 @@ def test_list_all(sshaman_setup, capsys):
 """
 
     # Normalize newlines and spaces for cross-platform compatibility and consistent formatting
-    print("-"*50)
+    print("-" * 50)
     print("Actual Output vs. Expected Output:")
     print_diff(expected=correct_output, actual=output)
     print("-" * 50)
@@ -127,12 +127,14 @@ def test_list_all(sshaman_setup, capsys):
 
     assert output == correct_output
 
+
 def test_make_group_single(sshaman_setup):
     smn, _ = sshaman_setup
     group_name = "group1"
     created_group = smn.make_group(group_name)
     assert isinstance(created_group, ServerGroup)
     assert os.path.exists(os.path.join(smn.config_path, group_name))
+
 
 def test_make_group_nested(sshaman_setup):
     smn, _ = sshaman_setup
@@ -154,4 +156,3 @@ def test_make_group_nested(sshaman_setup):
     #
     # Optionally, assert parent-child relationships if such properties are accessible
     # ...
-

@@ -58,6 +58,7 @@ def _dev_list_all():
     smn = SSHAMan(config_path=test_config_path)
     smn.list_all()
 
+
 if __name__ == '__main__':
     dev_list_all()
     # dev_add_server()

@@ -66,5 +66,3 @@ class SSHAMan:
         server_data = {'alias': alias, 'host': host, **kwargs}
         server = Server(**server_data)
         last_group.add_server(server)
-
-

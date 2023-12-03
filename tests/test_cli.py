@@ -5,10 +5,10 @@ from cli.sshaman_cli import cli
 
 from tests.setup_tests import sshaman_setup
 
+
 @pytest.fixture
 def runner():
     return CliRunner()
-
 
 
 def test_list_all(sshaman_setup, runner, capsys):
@@ -36,7 +36,6 @@ def test_list_all(sshaman_setup, runner, capsys):
     expected_output = expected_output.strip().replace('    ', '\t')
     output = output.strip().replace('    ', '\t')
     assert output.strip() == expected_output.strip()
-
 
 # # Test for make-group command
 # def test_make_group(sshaman_setup, runner, capsys):

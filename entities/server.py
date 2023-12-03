@@ -48,4 +48,3 @@ class Server(BaseModel):
 
     def serialize(self):
         return json.loads(self.model_dump_json(indent=4))
-

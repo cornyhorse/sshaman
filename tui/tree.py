@@ -19,7 +19,6 @@ from configs import CONFIG_PATH as ROOT_CONFIG_PATH
 from tui.ssh_connections.ssh_connect import connect_shell, connect_sftp
 
 
-
 class CodeBrowser(App):
     """Textual code browser app."""
 
@@ -122,7 +121,6 @@ class CodeBrowser(App):
             pass
         else:
             self.return_command(connect_sftp, config_path=self.selected_file_path)
-
 
 
 def main():

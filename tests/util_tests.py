@@ -12,6 +12,6 @@ def print_diff(expected, actual):
 
     print("Actual:")
     print(actual)
-    print("-"*50)
+    print("-" * 50)
     print("Expected:")
     print(expected)
