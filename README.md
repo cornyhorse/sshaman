@@ -1,4 +1,5 @@
 # SSHaMan - SSH Management
+![](./assets/sshaman.png)
 
 SSHaMan is a tool for managing SSH connections and configurations in a Linux shell. It provides an easy-to-use interface for managing multiple SSH connections, saving configurations, and quickly connecting to remote servers.
 
