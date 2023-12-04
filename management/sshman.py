@@ -53,7 +53,7 @@ class SSHAMan:
 
         return parent_group
 
-    def add_server(self, group_path, alias, host, **kwargs):
+    def add_server(self, group_path, alias, host, user, port, **kwargs):
         """
         Add a server to a group.
         :param alias:
@@ -64,7 +64,11 @@ class SSHAMan:
         last_group = self.make_group(group_path)
 
         # Create a server and add it to the last group
-        server_data = {'alias': alias, 'host': host, **kwargs}
+        server_data = {'alias': alias,
+                       'host': host,
+                       'user': user,
+                       'port': port,
+                       **kwargs}
         if not server_data.get('forward_ports'):
             server_data['forward_ports'] = ['']
 
@@ -72,4 +76,6 @@ class SSHAMan:
             server_data['start_commands'] = ['']
 
         server = Server(**server_data)
+        from pprint import pprint
+        pprint(server.dict())
         last_group.add_server(server)

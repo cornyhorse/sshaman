@@ -48,17 +48,17 @@ def initialize_sample(config_path):
 @click.argument('group_path')
 @click.argument('alias')
 @click.argument('host')
+@click.argument('user')
 @click.option('--port', required=False, default=22)
-@click.option('--user', required=False, default='root')
 @click.option('--identity_file', required=False, default='')
 @click.option('--password', required=False, default='')
 @click.option('--forward_ports', required=False)
 @click.option('--start_commands', required=False)
-@click.option('--config_path', required=False, default='')
-def add_server(group_path, alias, host, port, user, config_path=CONFIG_PATH, **kwargs):
+@click.option('--config_path', required=False)#, default='')
+def add_server(group_path, alias, host, user, port=22, config_path=CONFIG_PATH, **kwargs):
     """Add a server to a group."""
     manager = SSHAMan(config_path=config_path if config_path else CONFIG_PATH)
-    manager.add_server(group_path, alias, host, **kwargs)
+    manager.add_server(group_path, alias, host, user, port, **kwargs)
 
 
 if __name__ == '__main__':

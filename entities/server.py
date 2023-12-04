@@ -7,7 +7,7 @@ class Server(BaseModel):
     alias: str
     host: str
     port: int = Field(default=22, ge=0, le=65535)
-    user: str = None
+    user: str
     identity_file: str = None
     password: str = None
     forward_ports: list[str] = None
