@@ -12,6 +12,9 @@ SSHaMan is a tool for managing SSH connections and configurations in a Linux she
 # Video Walkthrough
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qQTd5xj6VM4/0.jpg)](https://youtu.be/qQTd5xj6VM4)
 
+# Warning!
+This software is still in Alpha!  Many changes are likely to occur before the first release.  Please use at your own risk!
+
 # Screenshots
 ## TUI
 ![](./assets/tui.png)
