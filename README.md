@@ -9,6 +9,9 @@ SSHaMan is a tool for managing SSH connections and configurations in a Linux she
 - Save and load SSH configurations
 - Quickly connect to remote servers
 
+# Video Walkthrough
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qQTd5xj6VM4/0.jpg)](https://youtu.be/qQTd5xj6VM4)
+
 # Screenshots
 ## TUI
 ![](./assets/tui.png)
