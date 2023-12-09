@@ -49,11 +49,11 @@ def initialize_sample(config_path):
 @click.argument('alias')
 @click.argument('host')
 @click.argument('user')
-@click.option('--port', required=False, default=22)
-@click.option('--identity_file', required=False, default='')
-@click.option('--password', required=False, default='')
-@click.option('--forward_ports', required=False)
-@click.option('--start_commands', required=False)
+@click.option('--port', '-p', required=False, default=22)
+@click.option('--identity_file', '-i', required=False, default='')
+@click.option('--password', '-P', required=False, default='')
+@click.option('--forward_ports', '-fp', required=False, multiple=True)
+@click.option('--start_commands', '-sc', required=False, multiple=True)
 @click.option('--config_path', required=False)#, default='')
 def add_server(group_path, alias, host, user, port=22, config_path=CONFIG_PATH, **kwargs):
     """Add a server to a group."""

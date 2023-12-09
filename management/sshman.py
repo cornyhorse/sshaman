@@ -63,6 +63,13 @@ class SSHAMan:
         """
         last_group = self.make_group(group_path)
 
+        if kwargs.get('forward_ports'):
+            kwargs['forward_ports'] = list(kwargs['forward_ports'])
+
+        if kwargs.get('start_commands'):
+            raise NotImplementedError("Start commands are not supported yet.")
+            kwargs['start_commands'] = list(kwargs['start_commands'])
+
         # Create a server and add it to the last group
         server_data = {'alias': alias,
                        'host': host,
@@ -76,6 +83,4 @@ class SSHAMan:
             server_data['start_commands'] = ['']
 
         server = Server(**server_data)
-        from pprint import pprint
-        pprint(server.dict())
         last_group.add_server(server)

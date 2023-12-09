@@ -6,9 +6,11 @@ Run with:
     python code_browser.py PATH
 """
 import json
+import logging
 import subprocess
 from rich.syntax import Syntax
 from rich.traceback import Traceback
+import sys
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, VerticalScroll
@@ -133,4 +135,24 @@ def main():
 
     if getattr(app, 'command', False):
         print(dynamic_data)
-        subprocess.run(dynamic_data, shell=True)
+        # Run the commands in the shell if multiple are specified
+        if isinstance(dynamic_data, list):
+            for i, command in enumerate(dynamic_data):
+                if i == 0:
+                    # Fail if the command does not successfully run
+                    error = subprocess.run(command, shell=True, capture_output=True)
+                    if error.returncode != 0:
+                        ssh_err = f"\nError Connecting to Server:\n{error.stderr.decode('utf-8')}"
+                        print(ssh_err)
+                        sys.exit(error.returncode)
+                else:
+                    error = subprocess.run(command, shell=True)
+                    if error.returncode != 0:
+                        ssh_err = error.stderr.decode('utf-8')
+                        error_msg = f"Error running command: {command} after connecting to the server."
+                        error_msg += '\n{}'.format(ssh_err)
+                        raise RuntimeError(error_msg)
+
+        # Otherwise, just connect:
+        elif isinstance(dynamic_data, str):
+            subprocess.run(dynamic_data, shell=True)
