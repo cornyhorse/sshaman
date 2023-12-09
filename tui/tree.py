@@ -15,7 +15,7 @@ import sys
 from textual.app import App, ComposeResult
 from textual.containers import Container, VerticalScroll
 from textual.reactive import var
-from textual.widgets import DirectoryTree, Footer, Header, Static, Placeholder
+from textual.widgets import DirectoryTree, Footer, Header, Static, Placeholder, Tree
 
 from configs import CONFIG_PATH as ROOT_CONFIG_PATH
 from tui.ssh_connections.ssh_connect import connect_shell, connect_sftp
@@ -110,20 +110,26 @@ class CodeBrowser(App):
         Called in response to c key binding.
         :return:
         """
-        if not self.selected_file_path:
+        path = self.query_one(Tree).cursor_node.data.path
+        # Prevent selection of a group of nodes.
+        if '.json' not in str(path).lower():
             pass
         else:
-            self.return_command(connect_shell, config_path=self.selected_file_path)
+            self.return_command(connect_shell, config_path=path)
 
     def action_connect_sftp(self) -> None:
         """
         Called in response to s key binding.
         :return:
         """
-        if not self.selected_file_path:
+        path = self.query_one(Tree).cursor_node.data.path
+        # Prevent selection of a group of nodes.
+        if '.json' not in path.lower():
             pass
         else:
-            self.return_command(connect_sftp, config_path=self.selected_file_path)
+            self.return_command(connect_sftp, config_path=path)
+
+
 
 
 def main():
