@@ -118,7 +118,7 @@ def connect_shell(config_path):
         for p in config['forward_ports']:
             fp += f' -L {p} '
 
-    idf = f'-i {config["identity_file"]}'
+    # idf = f'-i {config["identity_file"]}'
 
     command = f"ssh {fp} {idf} {config['user']}@{config['host']} -p {config['port']}"
     command = remove_double_spaces(command)
