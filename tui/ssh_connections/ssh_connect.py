@@ -123,9 +123,9 @@ def connect_shell(config_path):
     command = f"ssh {fp} {idf} {config['user']}@{config['host']} -p {config['port']}"
     command = remove_double_spaces(command)
 
-    if config.get('start_commands'):
-        raise NotImplementedError("Start commands are not supported yet.")
-        command = [command] + config['start_commands']
+    # if config.get('start_commands'):
+    #     raise NotImplementedError("Start commands are not supported yet.")
+    #     command = [command] + config['start_commands']
 
     return command
 
