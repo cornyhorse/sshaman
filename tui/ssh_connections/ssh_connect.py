@@ -1,7 +1,5 @@
-import os
-import subprocess
 import json
-import logging
+import os
 
 
 def check_if_ssh_config_exists(config_path):
@@ -102,6 +100,7 @@ def find_identity_file(identity_file):
         else:
             raise FileNotFoundError(f"Identity file not found: {identity_file_path}")
 
+
 def remove_double_spaces(string):
     """
     Removes double spaces from a string.
@@ -109,6 +108,7 @@ def remove_double_spaces(string):
     :return:
     """
     return ' '.join(string.split())
+
 
 def connect_shell(config_path):
     config = retrieve_file(config_path)
@@ -120,7 +120,8 @@ def connect_shell(config_path):
 
     idf = f'-i {config["identity_file"]}'
 
-    command = f"ssh {fp} {idf} {config['user']}@{config['host']} -p {config['port']}"
+    # command = f"ssh {fp} {idf} {config['user']}@{config['host']} -p {config['port']}"
+    command = f"ssh {idf} {config['user']}@{config['host']} -p {config['port']}"
     command = remove_double_spaces(command)
 
     # if config.get('start_commands'):
