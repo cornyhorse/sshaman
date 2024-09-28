@@ -113,10 +113,10 @@ def remove_double_spaces(string):
 def connect_shell(config_path):
     config = retrieve_file(config_path)
 
-    fp = ''
-    if config.get('forward_ports'):
-        for p in config['forward_ports']:
-            fp += f' -L {p} '
+    # fp = ''
+    # if config.get('forward_ports'):
+    #     for p in config['forward_ports']:
+    #         fp += f' -L {p} '
 
     idf = f'-i {config["identity_file"]}'
 
